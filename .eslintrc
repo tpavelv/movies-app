@@ -21,6 +21,16 @@
   },
   "plugins": ["react", "prettier", "import"],
   "rules": {
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "never",
+        "exports": "never",
+        "functions": "never",
+      },
+    ],
     "operator-linebreak": "off",
     "indent": ["error", 2, { "SwitchCase": 1 }],
     "object-curly-newline": ["error", { "consistent": true }],

@@ -22,7 +22,7 @@ export default class TmdbServices {
 
       return await response.json();
     } catch (error) {
-      console.error('new Error:', error);
+      console.error('new Error1:', error);
       throw error;
     }
   }

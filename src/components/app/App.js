@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-
 import './App.css';
+import { Spin, Alert } from 'antd';
+
 import TmdbServices from '../../services/tmdb-servises';
 import MoviesList from '../movies-list';
 
@@ -15,23 +16,38 @@ export default class App extends Component {
   state = {
     data: null,
     searchMovie: 'return',
+    loading: true,
+    error: false,
   };
 
   getData() {
     this.tmdbServices
       .getMovies(this.state.searchMovie)
       .then((data) => {
-        this.setState(() => ({ data: data.results, page: data.page }));
+        this.setState(() => ({ data: data.results, page: data.page, loading: false }));
       })
-      .catch((err) => console.error('Could not fetch', err));
+      .catch(() => {
+        this.onError();
+      });
   }
 
-  render() {
-    const { data } = this.state;
+  onError = () => {
+    this.setState({
+      error: true,
+      loading: false,
+    });
+  };
 
+  render() {
+    const { data, loading, error } = this.state;
+    const spinner = loading ? <Spin size="large" fullscreen /> : null;
+    const content = !loading ? <MoviesList data={data} /> : null;
+    const errorMessage = error ? <Alert message="Error Text" type="error" /> : null;
     return (
       <div className="App">
-        <MoviesList data={data} />
+        {spinner}
+        {content}
+        {errorMessage}
       </div>
     );
   }
