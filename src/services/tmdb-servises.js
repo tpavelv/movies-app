@@ -17,7 +17,7 @@ export default class TmdbServices {
     try {
       const response = await fetch(url, this.options);
       if (!response.ok) {
-        throw new Error(`Could not fetch ${url}, received ${response.status}`);
+        throw new Error(`Не удалось получить данные с сервера ${url}, код ${response.status}`);
       }
 
       return await response.json();
