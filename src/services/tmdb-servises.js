@@ -12,8 +12,8 @@ export default class TmdbServices {
     },
   };
 
-  async getMovies(name) {
-    const url = `${this.apiBase}?query=${name}&include_adult=false&page=1'$`;
+  async getMovies(name, page) {
+    const url = `${this.apiBase}?query=${name}&include_adult=false&page=${page}'$`;
     try {
       const response = await fetch(url, this.options);
       if (!response.ok) {

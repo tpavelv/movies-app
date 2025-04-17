@@ -15,5 +15,12 @@ export default function MoviesList(props) {
   } else {
     // cards = <Alert message="Error Text" type="error" />;
   }
-  return <ul className="movies__list">{cards}</ul>;
+  const notFound = <span>Результаты не найдены</span>;
+  return (
+    <ul className="movies__list">
+      {cards.length ? cards : notFound}
+      {/* {cards}
+      {notFound} */}
+    </ul>
+  );
 }
