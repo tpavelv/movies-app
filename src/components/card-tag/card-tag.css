@@ -1,0 +1,14 @@
+.card__tags {
+  margin-bottom: 10px;
+  max-width: 240px;
+}
+.card__tag {
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: auto;
+  margin-right: 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  background-color: #fafafa;
+  padding: 2px 4px 3px 5px;
+}

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
-// import { Spin, Alert, Pagination, Tabs } from 'antd';
-import { Spin, Alert, Pagination } from 'antd';
+import { Spin, Alert, Pagination, Tabs } from 'antd';
 import { debounce } from 'lodash';
 
 import TmdbServices from '../../services/tmdb-servises';
 import MoviesList from '../movies-list';
 import Header from '../header/header';
+import TmdbProvider from '../../tmdb-provider';
 
 export default class App extends Component {
   tmdbServices = new TmdbServices();
@@ -17,23 +17,33 @@ export default class App extends Component {
     viewPage: 1,
     loading: true,
     error: false,
+    activeTabKey: '1',
+    pageRated: false,
   };
 
   componentDidMount() {
     this.getData();
+    if (!localStorage.length) {
+      this.getGuestSession();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchMovie !== this.state.searchMovie) {
       this.debouncedGetData();
     }
-    if (prevState.viewPage !== this.state.viewPage) {
+    if (
+      prevState.viewPage !== this.state.viewPage ||
+      prevState.pageRated !== this.state.pageRated
+    ) {
       this.getData();
     }
   }
 
   onSearch = (value) => {
-    this.setState({ searchMovie: value });
+    setTimeout(() => {
+      this.setState({ searchMovie: value, viewPage: 1 });
+    }, 1500);
   };
 
   debouncedGetData = debounce(() => {
@@ -42,20 +52,42 @@ export default class App extends Component {
 
   getData = () => {
     this.setState({ loading: true, error: false });
-    this.tmdbServices
-      .getMovies(this.state.searchMovie, this.state.viewPage)
-      .then((data) => {
-        console.log(data);
-        this.setState(() => ({
-          data: data.results,
-          page: data.page,
-          loading: false,
-          totalResults: data.total_results,
-        }));
-      })
-      .catch(() => {
-        this.onError();
-      });
+    if (!this.state.pageRated) {
+      this.tmdbServices
+        .getMovies(this.state.searchMovie, this.state.viewPage)
+        .then((data) => {
+          this.setState(() => ({
+            data: data.results,
+            page: data.page,
+            loading: false,
+            totalResults: data.total_results,
+          }));
+        })
+        .catch(() => {
+          this.onError();
+        });
+    } else {
+      this.tmdbServices
+        .getRatedMovies(localStorage.key(0))
+        .then((data) => {
+          this.setState(() => ({
+            data: data.results,
+            page: data.page,
+            loading: false,
+            totalResults: data.total_results,
+          }));
+        })
+        .catch(() => {
+          this.onError();
+        });
+    }
+  };
+
+  getGuestSession = async () => {
+    const guestSession = await this.tmdbServices.createGuestSession().catch(() => {
+      this.onError();
+    });
+    localStorage.setItem(guestSession.guest_session_id, guestSession.expires_at);
   };
 
   onChangePage = (pageNumber) => {
@@ -69,8 +101,17 @@ export default class App extends Component {
     });
   };
 
+  onChangeTabs = () => {
+    this.setState(({ activeTabKey }) => {
+      if (activeTabKey === '1') {
+        return { activeTabKey: '2', pageRated: true };
+      }
+      return { activeTabKey: '1', pageRated: false };
+    });
+  };
+
   render() {
-    const { data, loading, error } = this.state;
+    const { data, loading, error, activeTabKey } = this.state;
     const spinner = loading ? <Spin size="large" fullscreen /> : null;
     const content = !loading ? <MoviesList data={data} /> : null;
     const pagination = !loading ? (
@@ -87,45 +128,45 @@ export default class App extends Component {
 
     const errorMessage = error ? <Alert message="Error Text" type="error" /> : null;
 
-    // const TabsPage = () => {
-    //   const tabItems = [
-    //     {
-    //       label: 'Search',
-    //       key: '1',
-    //       children: (
-    //         <>
-    //           {/* <Header onSearch={this.onSearch} /> */}
-    //           <Header searchMovie={this.state.searchMovie} onSearch={this.onSearch} />
-    //           {content}
-    //           {pagination}
-    //           {errorMessage}
-    //         </>
-    //       ),
-    //     },
-    //     {
-    //       label: 'Rated',
-    //       key: '2',
-    //       children: (
-    //         <>
-    //           {content}
-    //           {pagination}
-    //           {errorMessage}
-    //         </>
-    //       ),
-    //     },
-    //   ];
+    const TabsPage = () => {
+      const tabItems = [
+        {
+          label: 'Search',
+          key: '1',
+          children: (
+            <>
+              <Header searchMovie={this.state.searchMovie} onSearch={this.onSearch} />
+              {content}
+              {pagination}
+              {errorMessage}
+            </>
+          ),
+        },
+        {
+          label: 'Rated',
+          key: '2',
+          children: (
+            <>
+              {content}
+              {pagination}
+              {errorMessage}
+            </>
+          ),
+        },
+      ];
 
-    //   return <Tabs defaultActiveKey="1" items={tabItems} centered />;
-    // };
+      return (
+        <Tabs activeKey={activeTabKey} items={tabItems} centered onChange={this.onChangeTabs} />
+      );
+    };
 
     return (
-      <div className="App">
-        {spinner}
-        <Header onSearch={this.onSearch} />
-        {content}
-        {pagination}
-        {errorMessage}
-      </div>
+      <TmdbProvider>
+        <div className="App">
+          {spinner}
+          <TabsPage></TabsPage>
+        </div>
+      </TmdbProvider>
     );
   }
 }

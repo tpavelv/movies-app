@@ -26,4 +26,73 @@ export default class TmdbServices {
       throw error;
     }
   }
+
+  async getGenre() {
+    const url = 'https://api.themoviedb.org/3/genre/movie/list';
+    try {
+      const response = await fetch(url, this.options);
+      if (!response.ok) {
+        throw new Error(
+          `Не удалось получить данные о жанрах с сервера ${url}, код ${response.status}`
+        );
+      }
+      return response.json();
+    } catch (error) {
+      console.error('new Error:', error);
+      throw error;
+    }
+  }
+
+  async createGuestSession() {
+    const url = 'https://api.themoviedb.org/3/authentication/guest_session/new';
+    try {
+      const response = await fetch(url, this.options);
+      if (!response.ok) {
+        throw new Error(`Не удалось создать гостевую сессию ${url}, код ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('new Error:', error);
+      throw error;
+    }
+  }
+
+  async setRate(movieId, sessionId, value) {
+    const options = {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: `{"value":${value}}`,
+    };
+    const url = `https://api.themoviedb.org/3/movie/${movieId}/rating?guest_session_id=${sessionId}`;
+
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error(`Не удалось поставить рейтинг ${url}, код ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('new Error:', error);
+      throw error;
+    }
+  }
+
+  async getRatedMovies(sessionId) {
+    const url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies`;
+    try {
+      const response = await fetch(url, this.options);
+      if (!response.ok) {
+        throw new Error(`Не удалось получить данные с сервера ${url}, код ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('new Error:', error);
+      throw error;
+    }
+  }
 }

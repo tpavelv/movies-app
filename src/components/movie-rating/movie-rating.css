@@ -1,0 +1,22 @@
+.card__movie-rating {
+  font-family: 'inter', sans-serif;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  border: 2px solid red;
+  line-height: 26px;
+  text-align: center;
+  border-radius: 50%;
+}
+.card__movie-rating--low {
+  border-color: #e90000;
+}
+.card__movie-rating--middle-low {
+  border-color: #e97e00;
+}
+.card__movie-rating--middle {
+  border-color: #e9d100;
+}
+.card__movie-rating--hight {
+  border-color: #66e900;
+}
