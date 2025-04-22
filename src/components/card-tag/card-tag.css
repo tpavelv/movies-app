@@ -12,3 +12,9 @@
   background-color: #fafafa;
   padding: 2px 4px 3px 5px;
 }
+
+@media (max-width: 420px) {
+  .card__tags {
+    margin-bottom: 110px;
+  }
+}

@@ -7,3 +7,9 @@
   padding: 0;
   margin-bottom: 36px;
 }
+@media (max-width: 420px) {
+  .movies__list {
+    flex-direction: column;
+    gap: 20px;
+  }
+}

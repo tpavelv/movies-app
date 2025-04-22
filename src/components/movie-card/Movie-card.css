@@ -1,6 +1,8 @@
 .movies__card {
   width: 451px;
+
   height: 279px;
+
   display: flex;
   gap: 20px;
   box-sizing: border-box;
@@ -11,6 +13,7 @@
   line-height: 22px;
   letter-spacing: 0;
   text-align: start;
+  padding-right: 5px;
 }
 .card__content {
   display: flex;
@@ -25,7 +28,7 @@
 }
 
 .card__image {
-  width: 183px;
+  max-width: 183px;
   height: 100%;
   object-fit: cover;
 }
@@ -53,4 +56,41 @@
 }
 .ant-rate-star {
   margin-right: 4px !important;
+}
+
+@media (max-width: 420px) {
+  .movies__card {
+    width: 100%;
+    height: auto;
+    /* min-height: 245px; */
+    max-width: 388px;
+    padding: 6px 8px 0 10px;
+    gap: 13px;
+    position: relative;
+  }
+  .card__image {
+    max-width: 60px;
+  }
+  .card__content {
+    max-width: 296px;
+    width: 100%;
+  }
+  .card__header {
+    margin: 0;
+  }
+  .card__description {
+    position: absolute;
+    bottom: 55px;
+    left: 10px;
+    width: 388px;
+    width: 100%;
+    max-width: 372px;
+  }
+  .card__tags {
+    margin-bottom: 110px;
+  }
+  .ant-rate {
+    margin-top: auto;
+    margin-left: auto;
+  }
 }
