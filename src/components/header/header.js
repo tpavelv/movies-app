@@ -6,9 +6,15 @@ export default class Header extends Component {
     searchText: '',
   };
 
+  inputRef = React.createRef();
+
   onChangeValue = (e) => {
     this.setState({ searchText: e.target.value });
   };
+
+  componentDidMount() {
+    this.inputRef.current.focus();
+  }
 
   componentDidUpdate(prevProp, prevState) {
     if (prevState !== this.state) this.props.onSearch(this.state.searchText);
@@ -18,6 +24,7 @@ export default class Header extends Component {
     return (
       <header className="App__header header">
         <input
+          ref={this.inputRef}
           type="text"
           placeholder="Type to search"
           className="header__input"
