@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import TmdbServices from '../services/tmdb-servises';
-import Context from '../components/tmdb-context';
+import TmdbServices from '../../services/tmdb-servises';
+import Context from '../tmdb-context';
 
 export default class TmdbProvider extends Component {
   state = {

@@ -12,12 +12,18 @@ export default class Header extends Component {
     this.setState({ searchText: e.target.value });
   };
 
+  onClearInput = () => {
+    this.setState({ searchText: '' });
+  };
+
   componentDidMount() {
     this.inputRef.current.focus();
   }
 
   componentDidUpdate(prevProp, prevState) {
-    if (prevState !== this.state) this.props.onSearch(this.state.searchText);
+    if (prevState.searchText !== this.state.searchText) {
+      this.props.onSearch(this.state.searchText);
+    }
   }
 
   render() {
@@ -30,7 +36,8 @@ export default class Header extends Component {
           className="header__input"
           value={this.state.searchText}
           onChange={this.onChangeValue}
-        ></input>{' '}
+          onFocus={this.onClearInput}
+        ></input>
       </header>
     );
   }

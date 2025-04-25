@@ -81,8 +81,8 @@ export default class TmdbServices {
     }
   }
 
-  async getRatedMovies(sessionId) {
-    const url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies`;
+  async getRatedMovies(sessionId, page) {
+    const url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${this.apiKey}&page=${page}`;
     try {
       const response = await fetch(url, this.options);
       if (!response.ok) {
